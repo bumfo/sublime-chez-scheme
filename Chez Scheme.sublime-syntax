@@ -21,16 +21,27 @@ variables:
   real_16: '(?:[+\-]?(?:[0-9a-f]+|[0-9a-f]+\/[0-9a-f]+)|\+nan\.0|\-nan\.0|\+inf\.0|\-inf\.0)'
 
 contexts:
+  prototype:
+    - include: comments
+
   main:
     - include: shebang
-    - include: lists
-    - include: unmatched
+    - include: expressions
+    - scope: invalid.illegal.identifier.symbol.ss
+      match: '\S'
+
+  comments:
+    - scope: comment.line.ss
+      match: ';.*(?:\n|$)'
+    - match: '#\|'
+      push:
+        - meta_scope: comment.block.ss
+        - match: '\|#'
+          pop: true
 
   unmatched:
     - scope: invalid.illegal.identifier.ss
       match: '[^\s()]+'
-    - scope: invalid.illegal.identifier.symbol.ss
-      match: '\S'
 
   lists:
     - match: '\('
@@ -48,8 +59,59 @@ contexts:
           pop: true
         - include: datums
 
+  hints:
+    - scope: keyword
+      match: '(?:import|define|lambda|if|\+|\-|\*|\/|\=){{boundary}}'
+    - scope: support.function
+      match: '(?:(?:eq|eqv|equal)\?|cons|car|cdr){{boundary}}'
+    # - scope: variable.function
+    #   match: '{{identifier}}'
+
+  expression-parens:
+    - match: '\('
+      scope: punctuation.section.expr.begin.ss
+      push:
+        - match: '\)'
+          scope: punctuation.section.expr.end.ss
+          pop: true
+        - match: '\s*'
+          set:
+            - include: hints
+            - match: ''
+              set:
+                - match: '\)'
+                  scope: punctuation.section.expr.end.ss
+                  pop: true
+                - include: expressions
+    - match: '\['
+      scope: punctuation.section.expr.begin.ss
+      push:
+        - match: '\]'
+          scope: punctuation.section.expr.end.ss
+          pop: true
+        - match: '\s*'
+          set:
+            - include: hints
+            - match: ''
+              set:
+                - match: '\]'
+                  scope: punctuation.section.expr.end.ss
+                  pop: true
+                - include: expressions
+
+  expressions:
+    - include: expression-parens
+    - include: datums
+
   datums:
     - include: lists
+    - scope: punctuation.section.quoted.ss
+      match: '''\s*'
+      push:
+        - meta_scope: meta.quoted
+        - include: datums
+        - match: ''
+          pop: true
     - include: boolean
     - include: numbers
     - include: characters
@@ -81,6 +143,7 @@ contexts:
       scope: punctuation.definition.string.begin.ss
       push:
         - meta_scope: string.quoted.double.ss
+        - meta_include_prototype: false
         - scope: punctuation.definition.string.end.ss
           match: '"'
           pop: true
