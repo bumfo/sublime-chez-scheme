@@ -1,0 +1,4 @@
+{
+  "shell_cmd": "scheme -q --program $file",
+  "selector": "source.ss"
+}

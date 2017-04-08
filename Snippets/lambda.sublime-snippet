@@ -1,0 +1,7 @@
+<snippet>
+  <content><![CDATA[
+(lambda ($1) ${2:#f})
+]]></content>
+  <tabTrigger>la</tabTrigger>
+  <scope>source.ss</scope>
+</snippet>
