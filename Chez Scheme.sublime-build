@@ -1,4 +1,9 @@
 {
   "shell_cmd": "scheme -q --program $file",
-  "selector": "source.ss"
+  "selector": "source.ss",
+  "variants": [{
+    "name": "Compile Program",
+    "shell_cmd": "echo \\(compile-program \\\"$file\\\"\\) | scheme -q",
+    "selector": "source.ss",
+  }]
 }

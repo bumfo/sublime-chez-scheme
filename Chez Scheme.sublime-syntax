@@ -9,6 +9,7 @@ name: Chez Scheme
 scope: source.ss
 file_extensions:
   - ss
+first_line_match: '^#!.*(?=\b(?:scheme)\b)'
 
 variables:
   identifier: '(?:(?!\+|\-(?!\>)|\.|\d)[[:alnum:]?!.+\-*/<=>:$%\^&_~@]+|[+\-]|\.\.\.){{boundary}}'
@@ -41,7 +42,7 @@ contexts:
 
   unmatched:
     - scope: invalid.illegal.identifier.ss
-      match: '[^\s()]+'
+      match: '[^\s()\[\]]+'
 
   lists:
     - match: '\('
@@ -60,11 +61,49 @@ contexts:
         - include: datums
 
   hints:
+    - scope: keyword.lambda
+      match: '(?:lambda){{boundary}}'
+      push:
+        - match: '\s*'
+          set:
+            - scope: punctuation.section.begin
+              match: '\('
+              set:
+                - scope: variable.parameter
+                  match: '{{identifier}}'
+                - scope: punctuation.section.end
+                  match: '\)'
+                  pop: true
+            - match: ''
+              pop: true
+    - scope: keyword.define
+      match: '(?:define){{boundary}}'
+      push:
+        - match: '\s*'
+          set:
+            - scope: punctuation.section.begin
+              match: '\('
+              set:
+                - scope: entity.ss-name.function
+                  match: '{{identifier}}'
+                  set:
+                    - scope: variable.parameter
+                      match: '{{identifier}}'
+                    - scope: punctuation.section.end
+                      match: '\)'
+                      pop: true
+                - scope: punctuation.section.end
+                  match: '\)'
+                  pop: true
+            - match: ''
+              pop: true
     - scope: keyword
-      match: '(?:import|define|lambda|if|\+|\-|\*|\/|\=){{boundary}}'
-    - scope: support.function
-      match: '(?:(?:eq|eqv|equal)\?|cons|car|cdr){{boundary}}'
-    # - scope: variable.function
+      match: '(?:library|export|import(?:-only)?|eval(?:-when)?|module|include|define(?:-syntax|-record-type)?|lambda|if|else|cond|let|case|\+|-|\*|/|=|>|<|>=|<=){{boundary}}'
+    - scope: support.function.ss
+      match: '(?:(?:eq|eqv|equal|string|list|pair|number|boolean|symbol)\?|cons|car|cdr|c[ad]{2,4}r|length|void|printf|errorf){{boundary}}'
+    - scope: support.function.library.ss
+      match: '(?:display|format){{boundary}}'
+    # - scope: variable.function.any
     #   match: '{{identifier}}'
 
   expression-parens:
@@ -106,12 +145,38 @@ contexts:
   datums:
     - include: lists
     - scope: punctuation.section.quoted.ss
-      match: '''\s*'
+      match: ''''
       push:
-        - meta_scope: meta.quoted
-        - include: datums
-        - match: ''
-          pop: true
+        - match: '\s+'
+        - match: '(?=\S)'
+          set:
+            - meta_scope: meta.quoted
+            - include: datums
+            - match: ''
+              pop: true
+    - scope: punctuation.section.quasiquoted.ss
+      match: '`'
+      push:
+        - match: '\s+'
+        - match: '(?=\S)'
+          set:
+            - meta_scope: meta.quasiquoted
+            - include: datums
+            - match: ''
+              pop: true
+    - scope: punctuation.section.unquoted.ss
+      match: ','
+      push:
+        - match: '\s+'
+        - match: '(?=\S)'
+          set:
+            - meta_scope: meta.unquoted
+            - include: expression-parens
+            - include: datums
+            - match: ''
+              pop: true
+    - scope: punctuation.dotted-pair.ss
+      match: '[.]{{boundary}}'
     - include: boolean
     - include: numbers
     - include: characters
@@ -155,6 +220,6 @@ contexts:
 
   shebang:
     - match: ^(#!).*$\n?
-      scope: comment.line.shebang.js
+      scope: comment.line.shebang.ss
       captures:
-        1: punctuation.definition.comment.js
+        1: punctuation.definition.comment.ss
