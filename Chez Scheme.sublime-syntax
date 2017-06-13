@@ -100,9 +100,11 @@ contexts:
     - scope: keyword
       match: '(?:library|export|import(?:-only)?|eval(?:-when)?|module|include|define(?:-syntax|-record-type)?|lambda|if|else|cond|let|case|\+|-|\*|/|=|>|<|>=|<=){{boundary}}'
     - scope: support.function.ss
-      match: '(?:(?:eq|eqv|equal|string|list|pair|number|boolean|symbol)\?|cons|car|cdr|c[ad]{2,4}r|length|void|printf|errorf){{boundary}}'
+      match: '(?:(?:eq|eqv|equal|string|list|pair|number|boolean|symbol)\?|cons|car|cdr|c[ad]{2,4}r|length|void){{boundary}}'
+    - scope: support.function.math.ss
+      match: '(?:quotient|remainder|modulo|max|min|abs|numerator|denominator|gcd|lcm|floor|ceiling|truncate|round|rationalize|expt){{boundary}}'
     - scope: support.function.library.ss
-      match: '(?:display|format){{boundary}}'
+      match: '(?:display|format|printf|errorf|pretty-print){{boundary}}'
     # - scope: variable.function.any
     #   match: '{{identifier}}'
 
