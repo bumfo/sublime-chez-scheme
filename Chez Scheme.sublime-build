@@ -1,9 +1,9 @@
 {
-  "shell_cmd": "scheme -q --program $file",
+  "shell_cmd": "chez -q --program $file",
   "selector": "source.ss",
   "variants": [{
     "name": "Compile Program",
-    "shell_cmd": "echo \\(compile-program \\\"$file\\\"\\) | scheme -q",
+    "shell_cmd": "echo \\(compile-program \\\"$file\\\"\\) | chez -q",
     "selector": "source.ss",
   }]
 }
