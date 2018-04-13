@@ -2,8 +2,8 @@
 ---
 # http://www.sublimetext.com/docs/3/syntax.html
 #
-# `Common Lisp` Language Reference:
-# http://www.cs.cmu.edu/Groups/AI/html/cltl/clm/index.html
+# The Scheme Programming Language:
+# https://www.scheme.com/tspl4/
 #
 name: Chez Scheme
 scope: source.ss
