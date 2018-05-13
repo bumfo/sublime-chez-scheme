@@ -98,15 +98,19 @@ contexts:
             - match: ''
               pop: true
     - scope: keyword
-      match: '(?:library|export|import(?:-only)?|eval(?:-when)?|module|include|define(?:-syntax|-record-type)?|lambda|if|else|cond|let|case){{boundary}}'
+      match: '(?:library|export|import(?:-only)?|eval(?:-when)?|module|include|define(?:-syntax|-record-type)?|lambda|if|else|cond|let(?:\*)?|case){{boundary}}'
     - scope: keyword.operator
       match: '(?:\+|-|\*|/|=|>|<|>=|<=){{boundary}}'
+    - scope: keyword.operator.fx
+      match: 'fx(?:\+|-|\*|/|=|>|<|>=|<=){{boundary}}'
     - scope: support.function.ss
       match: '(?:(?:eq|eqv|equal|string|list|pair|number|boolean|symbol|null)\?|cons|car|cdr|c[ad]{2,4}r|length|void){{boundary}}'
     - scope: support.function.math.ss
       match: '(?:quotient|remainder|modulo|max|min|abs|numerator|denominator|gcd|lcm|floor|ceiling|truncate|round|rationalize|expt){{boundary}}'
     - scope: support.function.library.ss
       match: '(?:display|format|printf|errorf|pretty-print|newline){{boundary}}'
+    - scope: support.function.vector.ss
+      match: '(?:vector(-ref|-length)?){{boundary}}'
     # - scope: variable.function.any
     #   match: '{{identifier}}'
 
